@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol LabelDelegate: class {
+protocol LabelDelegate: AnyObject {
     
     func didTouchUpInside(label: Label)
 }
@@ -24,7 +24,7 @@ class Label: UILabel {
     weak var delegate: LabelDelegate?
     var kind: Kind!
     
-    private let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapRecognizer))
+    private let tapRecognizer = UITapGestureRecognizer(target: Label.self, action: #selector(handleTapRecognizer))
     
     init(alignment: NSTextAlignment = .left) {
         super.init(frame: .zero)
@@ -58,7 +58,7 @@ class Label: UILabel {
     
     override func drawText(in rect: CGRect) {
         let insets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
+        super.drawText(in: rect.inset(by: insets))
     }
     
     private func commonInitializer() {

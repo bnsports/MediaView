@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 import CoreMedia
 
-protocol PlayerDelegate: class {
+protocol PlayerDelegate: AnyObject {
     func didPlay(player: Player)
     func didPause(player: Player)
     func didFail(player: Player)
@@ -70,6 +70,8 @@ class Player: AVPlayer {
                 self.removeObservers()
             case .readyToPlay:
                 self.delegate?.didBecomeReadyToPlay(player: self)
+            @unknown default:
+                break
             }
         })
         

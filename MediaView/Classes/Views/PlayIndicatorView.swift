@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol PlayIndicatorDelegate: class {
+protocol PlayIndicatorDelegate: AnyObject {
     
     func player(for playIndicatorView: PlayIndicatorView) -> Player?
     func shouldShowPlayIndicator() -> Bool

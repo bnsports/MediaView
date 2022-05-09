@@ -8,7 +8,7 @@
 import Foundation
 
 @objc
-public protocol MediaViewDelegate: class {
+public protocol MediaViewDelegate: AnyObject {
     
     /// A listener to know what percentage that the view has minimized, at a value from 0 to 1
     @objc optional func mediaView(_ mediaView: MediaView, didChangeOffset offsetPercentage: CGFloat)

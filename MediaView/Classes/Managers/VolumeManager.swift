@@ -30,8 +30,8 @@ public class VolumeManager {
     
     /// Current audio type setting for the mediaView
     private var currentAudioType: AudioType {
-        get { return AudioType(rawValue: session.category) ?? .standard }
-        set { _ = try? session.setCategory(newValue.rawValue, with: .mixWithOthers) }
+        get { return AudioType(rawValue: session.category.rawValue) ?? .standard }
+        set { _ = try? session.setCategory(.init(rawValue: newValue.rawValue), options: .mixWithOthers) }
     }
     
     // MARK: - Public

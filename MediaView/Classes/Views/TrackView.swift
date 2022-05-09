@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol TrackViewDelegate: class {
+protocol TrackViewDelegate: AnyObject {
     
     func seekTo(time: TimeInterval, track: TrackView)
 }

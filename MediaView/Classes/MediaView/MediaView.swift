@@ -379,7 +379,7 @@ public class MediaView: UIImageView {
         let button = UIButton(frame: CGRect(size: 50))
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage.close, for: .normal)
-        button.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
+        button.addTarget(MediaView.self, action: #selector(closeAction), for: .touchUpInside)
         button.alpha = 0
         
         return button
@@ -569,9 +569,11 @@ public class MediaView: UIImageView {
             delegate?.didFinishPlayableMedia(for: self, withLoop: allowLooping)
             
             if let player = player, let item = player.currentItem {
-                item.seek(to: kCMTimeZero)
-                
-                allowLooping ? player.play() : player.pause()
+                item.seek(to: CMTime.zero, completionHandler: { success in
+                    if success {
+                        self.allowLooping ? player.play() : player.pause()
+                    }
+                })
             }
         }
     }
@@ -1100,12 +1102,12 @@ public class MediaView: UIImageView {
         
         if !subviews.contains(closeButton) {
             addSubview(closeButton)
-            bringSubview(toFront: closeButton)
+            bringSubviewToFront(closeButton)
         }
         
         if !subviews.contains(playIndicatorView) {
             addSubview(playIndicatorView)
-            bringSubview(toFront: playIndicatorView)
+            bringSubviewToFront(playIndicatorView)
         }
         
         if !subviews.contains(track) {
@@ -1119,9 +1121,9 @@ public class MediaView: UIImageView {
         
         NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewWillRotateNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(orientationChanged(_:)), name: .mediaViewDidRotateNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: .UIApplicationWillEnterForeground, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: .UIApplicationDidBecomeActive, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(pauseVideoEnteringBackground), name: .UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustSubviews), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(pauseVideoEnteringBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
     
     override public class var layerClass: AnyClass {
