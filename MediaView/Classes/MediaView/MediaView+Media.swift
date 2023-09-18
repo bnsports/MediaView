@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 public extension MediaView {
     
@@ -15,6 +16,20 @@ public extension MediaView {
             if let image = image {
                 delegate?.mediaView(self, didSetImage: image)
             }
+        }
+    }
+    
+    func setThumbnailImage(url: URL) {
+        if let cache = CacheManager.Cache.image.getObject(for: url.absoluteString) as? UIImage {
+            image = cache
+            media.imageCache = cache
+            return
+        }
+        
+        if let thumbnail = getThumbnailImageFromVideoURL(fromUrl: url) {
+            image = thumbnail
+            media.imageCache = thumbnail
+            CacheManager.Cache.image.set(object: thumbnail, forKey: url.absoluteString)
         }
     }
     
@@ -49,13 +64,14 @@ public extension MediaView {
     func setVideo(url: String) {
         media.videoURL = url
         track.reset()
-        setPlayIndicatorView()
+        setPlayIndicatorView(alpha: 0)
         
         if shouldPreloadPlayableMedia || CacheManager.shared.shouldPreloadPlayableMedia {
             CacheManager.shared.preloadVideo(url: url, isFromDirectory: isFileFromDirectory)
         }
         
         toggleTrackDisplay()
+        loadPlayableMedia(shouldPlay: true)
     }
     
     func setVideo(url: String, thumbnail: UIImage) {
@@ -198,5 +214,19 @@ public extension MediaView {
         }
         
         toggleTrackDisplay()
+    }
+    
+    private func getThumbnailImageFromVideoURL(fromUrl url: URL) -> UIImage? {
+        let asset = AVAsset(url: url)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+
+        do {
+            let thumbnailImage = try imageGenerator.copyCGImage(at: CMTimeMake(value: 1, timescale: 60), actualTime: nil)
+            return UIImage(cgImage: thumbnailImage)
+        } catch {
+            print(error)
+        }
+
+        return nil
     }
 }

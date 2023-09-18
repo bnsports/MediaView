@@ -10,7 +10,7 @@ import AVFoundation
 
 /// UIImageView subclass capable of displaying images, videos, audio and gifs
 @objcMembers
-public class MediaView: UIImageView {
+open class MediaView: UIImageView {
 
     @objc
     public enum SwipeMode: NSInteger {
@@ -158,7 +158,7 @@ public class MediaView: UIImageView {
         return false
     }
     
-    internal func toggleTrackDisplay() {
+    open func toggleTrackDisplay() {
         track.isHidden = isTrackHidden
     }
     
@@ -456,7 +456,7 @@ public class MediaView: UIImageView {
         playIndicatorView.frame.size = CGSize(playSize)
         playIndicatorView.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
         closeButton.frame.origin = CGPoint(x: 0, y: 0 + (UIScreen.isPortrait ? topBuffer : 0))
-        closeButton.frame.size = CGSize(50)
+        closeButton.frame.size = CGSize(0)
     }
     
     // MARK: - Private Methods
@@ -754,7 +754,7 @@ public class MediaView: UIImageView {
         isMinimized = frame.origin.y == maxViewOffsetY && swipeMode == .minimize
     }
     
-    internal func setPlayIndicatorView(alpha: CGFloat = 1) {
+    open func setPlayIndicatorView(alpha: CGFloat = 1) {
         if hasPlayableMedia && (!isPlayingVideo || isLoadingVideo) {
             if !(shouldHidePlayButton && alpha != 0) {
                 playIndicatorView.updateImage()
@@ -939,7 +939,7 @@ public class MediaView: UIImageView {
         self.layoutIfNeeded()
     }
     
-    internal func hidePlayIndicator(animated: Bool = false) {
+    open func hidePlayIndicator(animated: Bool = false) {
         if let player = player, player.didFailToPlay {
             playIndicatorView.alpha = 1
         } else {
